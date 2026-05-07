@@ -34,8 +34,8 @@ jobs:
         run: |
           ARCHIVE=$(ls dist/canvacli_*_linux_amd64.tar.gz | head -1)
           tar -xzf "$ARCHIVE" -C /tmp
-          /tmp/canvacli --version
-          SIZE=$(/tmp/canvacli schema --compact | wc -c)
+          /tmp/canva --version
+          SIZE=$(/tmp/canva schema --compact | wc -c)
           if [ "$SIZE" -gt 4096 ]; then
             echo "compact schema too large: $SIZE bytes"
             exit 1
