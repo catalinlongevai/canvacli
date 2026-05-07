@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"sync"
 )
 
 type CallbackServer struct {
@@ -15,6 +16,7 @@ type CallbackServer struct {
 	errCh    chan error
 	state    string
 	port     int
+	once     sync.Once
 }
 
 // StartCallbackServer binds to the first free port in `ports` on 127.0.0.1
@@ -55,29 +57,27 @@ func (cs *CallbackServer) RedirectURI() string {
 }
 
 func (cs *CallbackServer) handle(w http.ResponseWriter, r *http.Request) {
-	gotState := r.URL.Query().Get("state")
-	if gotState != cs.state {
-		http.Error(w, "state mismatch", http.StatusBadRequest)
-		select {
-		case cs.errCh <- errors.New("oauth state mismatch"):
-		default:
+	delivered := false
+	cs.once.Do(func() {
+		delivered = true
+		gotState := r.URL.Query().Get("state")
+		if gotState != cs.state {
+			http.Error(w, "state mismatch", http.StatusBadRequest)
+			cs.errCh <- errors.New("oauth state mismatch")
+			return
 		}
-		return
-	}
-	if errStr := r.URL.Query().Get("error"); errStr != "" {
-		http.Error(w, errStr, http.StatusBadRequest)
-		select {
-		case cs.errCh <- fmt.Errorf("oauth error: %s", errStr):
-		default:
+		if errStr := r.URL.Query().Get("error"); errStr != "" {
+			http.Error(w, errStr, http.StatusBadRequest)
+			cs.errCh <- fmt.Errorf("oauth error: %s", errStr)
+			return
 		}
-		return
-	}
-	code := r.URL.Query().Get("code")
-	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprintln(w, `<html><body><h1>canvacli connected</h1><p>You can close this tab and return to your terminal.</p></body></html>`)
-	select {
-	case cs.codeCh <- code:
-	default:
+		code := r.URL.Query().Get("code")
+		w.Header().Set("Content-Type", "text/html")
+		fmt.Fprintln(w, `<html><body><h1>canvacli connected</h1><p>You can close this tab and return to your terminal.</p></body></html>`)
+		cs.codeCh <- code
+	})
+	if !delivered {
+		http.Error(w, "callback already delivered", http.StatusGone)
 	}
 }
 

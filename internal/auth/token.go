@@ -24,6 +24,9 @@ func SaveToken(path string, tok *oauth2.Token) error {
 	if err := os.MkdirAll(dir, 0o700); err != nil {
 		return err
 	}
+	// Tighten in case the dir already existed permissively (MkdirAll only sets
+	// perms on dirs it actually creates).
+	_ = os.Chmod(dir, 0o700)
 	tmp, err := os.CreateTemp(dir, ".token-*")
 	if err != nil {
 		return err

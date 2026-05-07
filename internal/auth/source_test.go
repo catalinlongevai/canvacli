@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"context"
 	"path/filepath"
 	"testing"
 	"time"
@@ -40,5 +39,4 @@ func TestPersistingSource_WritesOnRefresh(t *testing.T) {
 	if loaded.AccessToken != "new" || loaded.RefreshToken != "rt2" {
 		t.Fatalf("disk not updated: %+v", loaded)
 	}
-	_ = context.Background
 }

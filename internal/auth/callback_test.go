@@ -2,7 +2,6 @@ package auth
 
 import (
 	"context"
-	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -35,7 +34,6 @@ func TestCallbackServer_ReturnsCodeOnValidState(t *testing.T) {
 	if !strings.HasPrefix(srv.RedirectURI(), "http://127.0.0.1:") {
 		t.Fatalf("unexpected redirect URI: %q", srv.RedirectURI())
 	}
-	_ = io.Discard
 }
 
 func TestCallbackServer_RejectsBadState(t *testing.T) {
@@ -54,5 +52,29 @@ func TestCallbackServer_RejectsBadState(t *testing.T) {
 	defer cancel()
 	if _, err := srv.Wait(ctx); err == nil {
 		t.Fatal("expected error from bad state, got nil")
+	}
+}
+
+func TestCallbackServer_OAuthErrorReportedWhenStateValid(t *testing.T) {
+	state := "good-state"
+	srv, err := StartCallbackServer(state, []int{18771, 18772, 18773})
+	if err != nil {
+		t.Fatalf("StartCallbackServer: %v", err)
+	}
+	defer srv.Close()
+
+	go func() {
+		v := url.Values{"state": {state}, "error": {"access_denied"}}
+		http.Get(srv.RedirectURI() + "?" + v.Encode())
+	}()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	_, err = srv.Wait(ctx)
+	if err == nil {
+		t.Fatal("expected oauth error, got nil")
+	}
+	if !strings.Contains(err.Error(), "access_denied") {
+		t.Fatalf("expected access_denied in error, got %q", err.Error())
 	}
 }
