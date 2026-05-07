@@ -9,7 +9,7 @@ import (
 )
 
 const schemaCompactJSON = `{
-  "version": "1",
+  "version": "2",
   "commands": [
     {"name": "login", "args": []},
     {"name": "logout", "args": []},
@@ -22,13 +22,22 @@ const schemaCompactJSON = `{
     {"name": "folders", "args": []},
     {"name": "schema", "flags": ["compact","full","command"]},
     {"name": "sql", "args": ["query"], "flags": ["limit"]},
+    {"name": "sync"},
+    {"name": "search", "args": ["query"]},
+    {"name": "pages", "args": ["design"]},
+    {"name": "import", "args": ["file"]},
+    {"name": "resize", "args": ["design"], "required_flags": ["to"]},
+    {"name": "assets upload", "args": ["file"]},
+    {"name": "comments add", "args": ["design","text"]},
+    {"name": "comments thread", "args": ["thread-id"]},
+    {"name": "comments archive"},
     {"name": "mcp serve", "args": []}
   ],
   "exit_codes": {"0":"success","2":"auth","3":"not_found","4":"network","5":"validation","6":"rate_limited","7":"permission_denied"}
 }`
 
 const schemaFullJSON = `{
-  "version": "1",
+  "version": "2",
   "commands": [
     {"name":"login","summary":"OAuth 2.0 PKCE browser flow","examples":["canva login"]},
     {"name":"logout","summary":"Remove stored credentials and clear cache"},
@@ -37,10 +46,19 @@ const schemaFullJSON = `{
     {"name":"templates show","summary":"Get autofill dataset for template","args":["name|id"],"examples":["canva templates show 'Social Post'"]},
     {"name":"create","summary":"Create design from template + autofill (Enterprise)","required_flags":["template","autofill"],"flags":["folder","title","idempotency-key","dry-run"],"examples":["canva create --template 'Social Post' --autofill data.json"],"error_codes":["template_not_found","validation","permission_denied"]},
     {"name":"list","summary":"List designs as NDJSON","flags":["fields","limit"],"examples":["canva list --limit 5","canva list --fields id,title"]},
-    {"name":"export","summary":"Export design (eager download)","args":["name|id"],"required_flags":["format"],"flags":["output","url-only"],"examples":["canva export 'Q3 Banner' --format pdf"],"error_codes":["design_not_found","validation"]},
+    {"name":"export","summary":"Export design (eager download)","args":["name|id"],"required_flags":["format"],"flags":["output","url-only","pages"],"examples":["canva export 'Q3 Banner' --format pdf"],"error_codes":["design_not_found","validation"]},
     {"name":"folders","summary":"List folders by walking root and uploads"},
     {"name":"schema","summary":"Print this schema","flags":["compact","full","command"]},
     {"name":"sql","summary":"Read-only SQL against local cache","args":["query"],"flags":["limit"],"examples":["canva sql \"SELECT id,title FROM designs LIMIT 5\""]},
+    {"name":"sync","summary":"Mirror Canva account into local SQLite (designs, templates, folders, assets, comments)","flags":["since","resource"],"examples":["canva sync","canva sync --resource designs"]},
+    {"name":"search","summary":"FTS5 search across mirrored data","args":["query"],"flags":["scope","limit"],"examples":["canva search 'Q3 banner'","canva search foo --scope comments"]},
+    {"name":"pages","summary":"List pages of a design","args":["design"],"examples":["canva pages 'Q3 Banner'"]},
+    {"name":"import","summary":"Import a local file as a Canva design (PDF/PPTX/DOCX/image)","args":["file"],"flags":["folder","title"],"examples":["canva import deck.pdf"]},
+    {"name":"resize","summary":"Resize a design to a preset (creates new design)","args":["design"],"required_flags":["to"],"examples":["canva resize 'Q3 Banner' --to instagram_post"]},
+    {"name":"assets upload","summary":"Upload a local file to the Canva asset library","args":["file"],"flags":["name","tags"],"examples":["canva assets upload logo.png"]},
+    {"name":"comments add","summary":"Post a comment on a design (creates a thread)","args":["design","text"],"examples":["canva comments add 'Q3 Banner' 'Looks good'"]},
+    {"name":"comments thread","summary":"Show a comment thread + replies","args":["thread-id"],"examples":["canva comments thread CMT123"]},
+    {"name":"comments archive","summary":"Archive locally cached comment threads","flags":["design"],"examples":["canva comments archive"]},
     {"name":"mcp serve","summary":"Run an MCP server over stdio for Claude Desktop / Cursor / agents","examples":["canva mcp serve"]}
   ],
   "global_flags": ["json","no-cache","quiet","auto-wait"],

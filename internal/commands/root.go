@@ -39,5 +39,14 @@ func NewRoot(version, commit, date string) *cobra.Command {
 	root.AddCommand(NewSQL())
 	root.AddCommand(NewMCP())
 
+	// v2 surface — stubs in Phase 3a, replaced by per-resource Phase 3b agents.
+	root.AddCommand(NewSync())
+	root.AddCommand(NewSearch())
+	root.AddCommand(NewPages())
+	root.AddCommand(NewImport())
+	root.AddCommand(NewResize())
+	root.AddCommand(NewAssets())
+	root.AddCommand(NewComments())
+
 	return root
 }

@@ -219,4 +219,176 @@ func (s *Server) registerTools() {
 			return mcp.NewToolResultText(schema), nil
 		},
 	)
+
+	s.registerV2Stubs()
+}
+
+// notImplementedHandler returns a stub MCP handler for v2 tools registered
+// during the foundation phase (3a). Phase 3b agents replace each registration
+// site with the real implementation that calls api/cache/etc.
+func notImplementedHandler(_ context.Context, _ mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	return mcp.NewToolResultError("not implemented in foundation phase"), nil
+}
+
+// registerV2Stubs registers placeholder MCP tools for the v2 surface area.
+// All handlers return "not implemented in foundation phase". Phase 3b agents
+// replace each tool's registration with the real implementation.
+//
+// Annotations follow the v1.1 fix pattern: every tool sets
+// destructiveHint explicitly (true only for canva_create per the v1.1 fix).
+// readOnlyHint is set true for tools that only read state.
+func (s *Server) registerV2Stubs() {
+	// canva_sync — mutates the local cache, not Canva state. Not destructive.
+	s.mcp.AddTool(
+		mcp.NewTool("canva_sync",
+			mcp.WithDescription("Mirror the user's Canva account (designs, templates, folders, assets, comments) into the local SQLite cache."),
+			mcp.WithReadOnlyHintAnnotation(false),
+			mcp.WithDestructiveHintAnnotation(false),
+		),
+		notImplementedHandler,
+	)
+
+	// canva_search — read-only FTS5 query.
+	s.mcp.AddTool(
+		mcp.NewTool("canva_search",
+			mcp.WithDescription("FTS5 search across mirrored designs, comments, assets, and templates."),
+			mcp.WithString("query", mcp.Required(), mcp.Description("FTS5 query string")),
+			mcp.WithString("scope", mcp.Description("designs|templates|comments|assets|all (default all)")),
+			mcp.WithNumber("limit", mcp.Description("Max rows (1-1000, default 50)")),
+			mcp.WithReadOnlyHintAnnotation(true),
+			mcp.WithDestructiveHintAnnotation(false),
+		),
+		notImplementedHandler,
+	)
+
+	// canva_pages — read-only listing of design pages.
+	s.mcp.AddTool(
+		mcp.NewTool("canva_pages",
+			mcp.WithDescription("List the pages of a Canva design with thumbnails."),
+			mcp.WithString("design_id_or_name", mcp.Required(), mcp.Description("Design ID or exact title")),
+			mcp.WithReadOnlyHintAnnotation(true),
+			mcp.WithDestructiveHintAnnotation(false),
+		),
+		notImplementedHandler,
+	)
+
+	// canva_import — creates a new Canva design from a local file. Not destructive (new resource).
+	s.mcp.AddTool(
+		mcp.NewTool("canva_import",
+			mcp.WithDescription("Import a local PDF/PPTX/DOCX/image as a new Canva design."),
+			mcp.WithString("file", mcp.Required(), mcp.Description("Path to the local file to import")),
+			mcp.WithString("title", mcp.Description("Title for the new design")),
+			mcp.WithString("folder", mcp.Description("Target folder ID")),
+			mcp.WithReadOnlyHintAnnotation(false),
+			mcp.WithDestructiveHintAnnotation(false),
+		),
+		notImplementedHandler,
+	)
+
+	// canva_resize — creates a new design at a different size. Not destructive (new resource).
+	s.mcp.AddTool(
+		mcp.NewTool("canva_resize",
+			mcp.WithDescription("Resize a Canva design to a new preset (creates a new design; original is untouched)."),
+			mcp.WithString("design_id_or_name", mcp.Required(), mcp.Description("Source design ID or exact title")),
+			mcp.WithString("to", mcp.Required(), mcp.Description("Target preset (e.g. 'instagram_post') or 'WxH'")),
+			mcp.WithReadOnlyHintAnnotation(false),
+			mcp.WithDestructiveHintAnnotation(false),
+		),
+		notImplementedHandler,
+	)
+
+	// canva_assets_upload — uploads a new asset. Not destructive.
+	s.mcp.AddTool(
+		mcp.NewTool("canva_assets_upload",
+			mcp.WithDescription("Upload a local file (image/video/audio) to the user's Canva asset library."),
+			mcp.WithString("file", mcp.Required(), mcp.Description("Path to the local file to upload")),
+			mcp.WithString("name", mcp.Description("Display name for the asset (default: filename)")),
+			mcp.WithReadOnlyHintAnnotation(false),
+			mcp.WithDestructiveHintAnnotation(false),
+		),
+		notImplementedHandler,
+	)
+
+	// canva_comments_add — posts a new top-level comment. Not destructive.
+	s.mcp.AddTool(
+		mcp.NewTool("canva_comments_add",
+			mcp.WithDescription("Post a top-level comment on a Canva design (creates a new thread)."),
+			mcp.WithString("design_id_or_name", mcp.Required(), mcp.Description("Design ID or exact title")),
+			mcp.WithString("text", mcp.Required(), mcp.Description("Comment body")),
+			mcp.WithReadOnlyHintAnnotation(false),
+			mcp.WithDestructiveHintAnnotation(false),
+		),
+		notImplementedHandler,
+	)
+
+	// canva_comments_reply — posts a reply on a thread. Not destructive.
+	s.mcp.AddTool(
+		mcp.NewTool("canva_comments_reply",
+			mcp.WithDescription("Reply to an existing Canva comment thread."),
+			mcp.WithString("thread_id", mcp.Required(), mcp.Description("Comment thread ID")),
+			mcp.WithString("text", mcp.Required(), mcp.Description("Reply body")),
+			mcp.WithReadOnlyHintAnnotation(false),
+			mcp.WithDestructiveHintAnnotation(false),
+		),
+		notImplementedHandler,
+	)
+
+	// canva_comments_thread — read-only fetch of a thread + its replies.
+	s.mcp.AddTool(
+		mcp.NewTool("canva_comments_thread",
+			mcp.WithDescription("Fetch a comment thread and its replies."),
+			mcp.WithString("thread_id", mcp.Required(), mcp.Description("Comment thread ID")),
+			mcp.WithReadOnlyHintAnnotation(true),
+			mcp.WithDestructiveHintAnnotation(false),
+		),
+		notImplementedHandler,
+	)
+
+	// canva_comments_archive — local-cache archival walk. Read-only against Canva.
+	s.mcp.AddTool(
+		mcp.NewTool("canva_comments_archive",
+			mcp.WithDescription("Archive locally cached comment threads (drops them from the local cache)."),
+			mcp.WithString("design_id_or_name", mcp.Description("Limit archival to one design's threads")),
+			mcp.WithReadOnlyHintAnnotation(true),
+			mcp.WithDestructiveHintAnnotation(false),
+		),
+		notImplementedHandler,
+	)
+
+	// canva_create — was skipped in v1.1 because creating a design is a
+	// write that downstream tools may not be able to undo cleanly.
+	// destructiveHint=true per the v1.1 fix pattern.
+	s.mcp.AddTool(
+		mcp.NewTool("canva_create",
+			mcp.WithDescription("Create a new Canva design from a brand template + autofill JSON (Enterprise)."),
+			mcp.WithString("template", mcp.Required(), mcp.Description("Template ID or exact name")),
+			mcp.WithString("autofill", mcp.Required(), mcp.Description("Path to JSON file with autofill data, or inline JSON")),
+			mcp.WithString("title", mcp.Description("Title for the new design")),
+			mcp.WithString("folder", mcp.Description("Target folder ID")),
+			mcp.WithReadOnlyHintAnnotation(false),
+			mcp.WithDestructiveHintAnnotation(true),
+		),
+		notImplementedHandler,
+	)
+
+	// canva_templates_list — read-only listing of brand templates.
+	s.mcp.AddTool(
+		mcp.NewTool("canva_templates_list",
+			mcp.WithDescription("List the user's brand templates (Enterprise)."),
+			mcp.WithReadOnlyHintAnnotation(true),
+			mcp.WithDestructiveHintAnnotation(false),
+		),
+		notImplementedHandler,
+	)
+
+	// canva_templates_show — read-only fetch of a template's autofill dataset.
+	s.mcp.AddTool(
+		mcp.NewTool("canva_templates_show",
+			mcp.WithDescription("Show a brand template's autofill dataset (the JSON shape for canva_create)."),
+			mcp.WithString("template_id_or_name", mcp.Required(), mcp.Description("Template ID or exact name")),
+			mcp.WithReadOnlyHintAnnotation(true),
+			mcp.WithDestructiveHintAnnotation(false),
+		),
+		notImplementedHandler,
+	)
 }

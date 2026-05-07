@@ -26,6 +26,10 @@ var canvaScopes = []string{
 	"brandtemplate:content:read",
 	"folder:read",
 	"profile:read",
+	"comment:read",
+	"comment:write",
+	"asset:read",
+	"asset:write",
 }
 
 func NewLogin() *cobra.Command {
