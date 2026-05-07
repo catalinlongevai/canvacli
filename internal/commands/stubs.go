@@ -13,6 +13,5 @@ func newStub(use string) *cobra.Command {
 // These are placeholders for commands that will be implemented in later
 // tasks. As each command is implemented in its own file, REMOVE its line
 // from here and the constructor from this file's exports.
-func NewFolders() *cobra.Command   { return newStub("folders") }
 func NewSchema() *cobra.Command    { return newStub("schema") }
 func NewSQL() *cobra.Command       { return newStub("sql") }
