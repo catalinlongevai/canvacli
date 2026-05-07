@@ -8,10 +8,24 @@ import (
 	"time"
 )
 
+// ExportFormat describes the output format for an export job.
+//
+// Pages, when non-empty, restricts the export to specific 1-based page
+// indices. Per the Canva OpenAPI spec the `pages` array lives INSIDE
+// `format` (not at the request top level), and is only honored on the
+// page-aware formats: png, jpg, pdf, gif. The whole-design formats
+// (pptx, mp4, html_bundle, html_standalone) ignore Pages and always
+// export every page.
 type ExportFormat struct {
-	Type string `json:"type"`
+	Type  string `json:"type"`
+	Pages []int  `json:"pages,omitempty"`
 }
 
+// ExportRequest submits a POST /exports job.
+//
+// To export specific pages, populate Format.Pages (1-based). Leaving
+// Format.Pages empty exports the whole design — fully backward
+// compatible with v1 callers.
 type ExportRequest struct {
 	DesignID string       `json:"design_id"`
 	Format   ExportFormat `json:"format"`

@@ -32,22 +32,10 @@ func NewSearch() *cobra.Command {
 	return newV2Stub("search [query]", "FTS5 search across mirrored designs, comments, assets, templates")
 }
 
-// NewPages lists the pages of a design.
-// Phase 3b (pages agent) replaces this stub.
-func NewPages() *cobra.Command {
-	return newV2Stub("pages <design>", "List pages of a design")
-}
-
 // NewImport imports a local file as a Canva design.
 // Phase 3b (import agent) replaces this stub.
 func NewImport() *cobra.Command {
 	return newV2Stub("import <file>", "Import a PDF/PPTX/DOCX/image as a Canva design")
-}
-
-// NewResize creates a new design at a different preset/size.
-// Phase 3b (resize agent) replaces this stub.
-func NewResize() *cobra.Command {
-	return newV2Stub("resize <design>", "Resize a design (creates a new design)")
 }
 
 // NewAssets is the parent command for asset-library operations.

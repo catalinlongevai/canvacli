@@ -264,12 +264,54 @@ func (s *Server) registerV2Stubs() {
 	// canva_pages — read-only listing of design pages.
 	s.mcp.AddTool(
 		mcp.NewTool("canva_pages",
-			mcp.WithDescription("List the pages of a Canva design with thumbnails."),
+			mcp.WithDescription("List the pages of a Canva design with thumbnails and dimensions. Backed by Canva's preview /designs/{id}/pages endpoint."),
 			mcp.WithString("design_id_or_name", mcp.Required(), mcp.Description("Design ID or exact title")),
+			mcp.WithNumber("limit", mcp.Description("Max pages to return (1-200, default unlimited)")),
 			mcp.WithReadOnlyHintAnnotation(true),
 			mcp.WithDestructiveHintAnnotation(false),
 		),
-		notImplementedHandler,
+		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+			args := req.GetArguments()
+			query, _ := args["design_id_or_name"].(string)
+			if query == "" {
+				return mcp.NewToolResultError("design_id_or_name is required"), nil
+			}
+			limit := 0
+			if v, ok := args["limit"].(float64); ok && v > 0 {
+				limit = int(v)
+			}
+			r := resolver.New(s.cache, s.api)
+			id, err := r.ResolveDesign(query)
+			if err != nil {
+				return mcp.NewToolResultError(err.Error()), nil
+			}
+			out := []map[string]any{}
+			count := 0
+			err = s.api.ListAllPages(ctx, id, func(p api.Page) error {
+				if limit > 0 && count >= limit {
+					return nil
+				}
+				row := map[string]any{
+					"design_id": id,
+					"index":     p.Index,
+				}
+				if p.Dimensions != nil {
+					row["width"] = int(p.Dimensions.Width)
+					row["height"] = int(p.Dimensions.Height)
+				}
+				if p.Thumbnail != nil {
+					row["thumbnail_url"] = p.Thumbnail.URL
+				}
+				out = append(out, row)
+				count++
+				return nil
+			})
+			if err != nil {
+				return mcp.NewToolResultError(err.Error()), nil
+			}
+			b, _ := json.Marshal(out)
+			return mcp.NewToolResultText(string(b)), nil
+		},
 	)
 
 	// canva_import — creates a new Canva design from a local file. Not destructive (new resource).
@@ -288,13 +330,50 @@ func (s *Server) registerV2Stubs() {
 	// canva_resize — creates a new design at a different size. Not destructive (new resource).
 	s.mcp.AddTool(
 		mcp.NewTool("canva_resize",
-			mcp.WithDescription("Resize a Canva design to a new preset (creates a new design; original is untouched)."),
+			mcp.WithDescription("Resize a Canva design to one of the four Canva presets (doc, email, presentation, whiteboard). Creates a new design; original is untouched. Requires Canva Pro or an active resize trial."),
 			mcp.WithString("design_id_or_name", mcp.Required(), mcp.Description("Source design ID or exact title")),
-			mcp.WithString("to", mcp.Required(), mcp.Description("Target preset (e.g. 'instagram_post') or 'WxH'")),
+			mcp.WithString("to", mcp.Required(), mcp.Description("Target preset: doc | email | presentation | whiteboard"), mcp.Enum("doc", "email", "presentation", "whiteboard")),
 			mcp.WithReadOnlyHintAnnotation(false),
 			mcp.WithDestructiveHintAnnotation(false),
 		),
-		notImplementedHandler,
+		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+			args := req.GetArguments()
+			query, _ := args["design_id_or_name"].(string)
+			to, _ := args["to"].(string)
+			if query == "" || to == "" {
+				return mcp.NewToolResultError("design_id_or_name and to are required"), nil
+			}
+			if !api.IsValidResizePreset(to) {
+				return mcp.NewToolResultError("invalid 'to' (allowed: doc, email, presentation, whiteboard)"), nil
+			}
+			r := resolver.New(s.cache, s.api)
+			id, err := r.ResolveDesign(query)
+			if err != nil {
+				return mcp.NewToolResultError(err.Error()), nil
+			}
+			res, err := s.api.ResizeDesign(ctx, api.ResizeRequest{
+				DesignID: id,
+				Preset:   api.ResizePreset(to),
+			})
+			if err != nil {
+				return mcp.NewToolResultError(err.Error()), nil
+			}
+			out := map[string]any{
+				"id":        res.Design.ID,
+				"title":     res.Design.Title,
+				"url":       res.Design.URL,
+				"source_id": id,
+				"preset":    to,
+			}
+			if res.TrialInformation != nil {
+				out["trial"] = map[string]any{
+					"uses_remaining": res.TrialInformation.UsesRemaining,
+					"upgrade_url":    res.TrialInformation.UpgradeURL,
+				}
+			}
+			b, _ := json.Marshal(out)
+			return mcp.NewToolResultText(string(b)), nil
+		},
 	)
 
 	// canva_assets_upload — uploads a new asset. Not destructive.
