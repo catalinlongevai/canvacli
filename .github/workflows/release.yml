@@ -1,0 +1,40 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v6
+        with:
+          go-version: '1.25'
+          cache: true
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v7
+        with:
+          version: "~> v2"
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+      - name: Smoke test linux binary
+        run: |
+          ARCHIVE=$(ls dist/canvacli_*_linux_amd64.tar.gz | head -1)
+          tar -xzf "$ARCHIVE" -C /tmp
+          /tmp/canvacli --version
+          SIZE=$(/tmp/canvacli schema --compact | wc -c)
+          if [ "$SIZE" -gt 4096 ]; then
+            echo "compact schema too large: $SIZE bytes"
+            exit 1
+          fi
