@@ -86,3 +86,15 @@ func TestExecReadOnly_AllowsWithSelect(t *testing.T) {
 		t.Fatalf("WITH ... SELECT should be allowed, got %v", err)
 	}
 }
+
+func TestExecReadOnly_EngineRejectsMutationViaQueryOnly(t *testing.T) {
+	c, _ := Open(filepath.Join(t.TempDir(), "c.db"))
+	defer c.Close()
+	// Run a query through the read-only handle that *would* be a mutation
+	// if the regex didn't catch it. Engine-level query_only must also reject.
+	// We verify by directly invoking the read-only handle with a mutation.
+	_, err := c.dbRO.Exec("INSERT INTO meta (key, value) VALUES ('k', 'v')")
+	if err == nil {
+		t.Fatal("expected engine to reject mutation under query_only(true)")
+	}
+}

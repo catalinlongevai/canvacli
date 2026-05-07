@@ -45,7 +45,8 @@ CREATE INDEX IF NOT EXISTS idx_idempotency_created ON idempotency(created_at);
 `
 
 type Cache struct {
-	db *sql.DB
+	db   *sql.DB // writable
+	dbRO *sql.DB // read-only with query_only(true) pragma
 }
 
 func Open(path string) (*Cache, error) {
@@ -57,8 +58,24 @@ func Open(path string) (*Cache, error) {
 		db.Close()
 		return nil, err
 	}
-	return &Cache{db: db}, nil
+
+	// Second handle: read-only, query_only=true, so even a regex-bypass
+	// can't mutate the DB through this path.
+	dbRO, err := sql.Open("sqlite", path+"?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2000)&_pragma=query_only(true)")
+	if err != nil {
+		db.Close()
+		return nil, err
+	}
+	return &Cache{db: db, dbRO: dbRO}, nil
 }
 
-func (c *Cache) DB() *sql.DB    { return c.db }
-func (c *Cache) Close() error   { return c.db.Close() }
+func (c *Cache) DB() *sql.DB { return c.db }
+
+func (c *Cache) Close() error {
+	roErr := c.dbRO.Close()
+	wErr := c.db.Close()
+	if wErr != nil {
+		return wErr
+	}
+	return roErr
+}

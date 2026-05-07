@@ -39,7 +39,7 @@ func (c *Cache) ExecReadOnly(query string, limit int) ([]map[string]any, error) 
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	rows, err := c.db.QueryContext(ctx, wrapped)
+	rows, err := c.dbRO.QueryContext(ctx, wrapped)
 	if err != nil {
 		return nil, err
 	}
