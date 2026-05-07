@@ -239,26 +239,28 @@ func notImplementedHandler(_ context.Context, _ mcp.CallToolRequest) (*mcp.CallT
 // readOnlyHint is set true for tools that only read state.
 func (s *Server) registerV2Stubs() {
 	// canva_sync — mutates the local cache, not Canva state. Not destructive.
+	// Implementation in handlers_sync_search.go (handleSync).
 	s.mcp.AddTool(
 		mcp.NewTool("canva_sync",
-			mcp.WithDescription("Mirror the user's Canva account (designs, templates, folders, assets, comments) into the local SQLite cache."),
+			mcp.WithDescription("Mirror the user's Canva account (designs, folders, templates, plus locally-known comments and assets) into the local SQLite cache. Returns a per-resource summary (count + duration). Comments and assets are upload-history-only — see spec §4.1."),
 			mcp.WithReadOnlyHintAnnotation(false),
 			mcp.WithDestructiveHintAnnotation(false),
 		),
-		notImplementedHandler,
+		s.handleSync,
 	)
 
 	// canva_search — read-only FTS5 query.
+	// Implementation in handlers_sync_search.go (handleSearch).
 	s.mcp.AddTool(
 		mcp.NewTool("canva_search",
-			mcp.WithDescription("FTS5 search across mirrored designs, comments, assets, and templates."),
-			mcp.WithString("query", mcp.Required(), mcp.Description("FTS5 query string")),
-			mcp.WithString("scope", mcp.Description("designs|templates|comments|assets|all (default all)")),
+			mcp.WithDescription("FTS5 search across mirrored designs, templates, comment threads, comment replies, and assets. FTS5 query syntax: 'q3 banner' (AND), 'launch*' (prefix), '\"q3 banner\"' (phrase), 'banner OR poster' (boolean), 'launch NOT draft' (negation)."),
+			mcp.WithString("query", mcp.Required(), mcp.Description("FTS5 MATCH query string")),
+			mcp.WithString("type", mcp.Description("Restrict to one source: design | template | comment_thread | comment_reply | asset")),
 			mcp.WithNumber("limit", mcp.Description("Max rows (1-1000, default 50)")),
 			mcp.WithReadOnlyHintAnnotation(true),
 			mcp.WithDestructiveHintAnnotation(false),
 		),
-		notImplementedHandler,
+		s.handleSearch,
 	)
 
 	// canva_pages — read-only listing of design pages.
@@ -389,86 +391,98 @@ func (s *Server) registerV2Stubs() {
 		s.handleAssetsUpload,
 	)
 
-	// canva_comments_add — posts a new top-level comment. Not destructive.
+	// canva_comments_add — posts a new top-level comment OR a reply when
+	// `reply_to` is set. Irreversible (no edit/delete API) — destructiveHint
+	// remains false because we don't destroy existing data, but the
+	// description calls out the irreversibility per spec §4.6.
 	s.mcp.AddTool(
 		mcp.NewTool("canva_comments_add",
-			mcp.WithDescription("Post a top-level comment on a Canva design (creates a new thread)."),
+			mcp.WithDescription("Post a comment on a Canva design. Without reply_to: creates a new top-level thread. With reply_to: posts a reply on that thread. Irreversible — the Canva API has no edit/delete endpoint."),
 			mcp.WithString("design_id_or_name", mcp.Required(), mcp.Description("Design ID or exact title")),
-			mcp.WithString("text", mcp.Required(), mcp.Description("Comment body")),
+			mcp.WithString("text", mcp.Required(), mcp.Description("Comment body (1-2048 chars)")),
+			mcp.WithString("reply_to", mcp.Description("Existing thread ID. If set, posts as a reply on that thread instead of creating a new one.")),
 			mcp.WithReadOnlyHintAnnotation(false),
 			mcp.WithDestructiveHintAnnotation(false),
 		),
-		notImplementedHandler,
+		s.handleCommentsAdd,
 	)
 
-	// canva_comments_reply — posts a reply on a thread. Not destructive.
+	// canva_comments_reply — convenience tool with reply_to required.
+	// Functionally a strict subset of canva_comments_add; kept for clarity
+	// per spec §4.6 (both names appear in the contract).
 	s.mcp.AddTool(
 		mcp.NewTool("canva_comments_reply",
-			mcp.WithDescription("Reply to an existing Canva comment thread."),
+			mcp.WithDescription("Reply to an existing Canva comment thread. Equivalent to canva_comments_add with reply_to set."),
+			mcp.WithString("design_id_or_name", mcp.Required(), mcp.Description("Design ID or exact title (the design that hosts the thread)")),
 			mcp.WithString("thread_id", mcp.Required(), mcp.Description("Comment thread ID")),
-			mcp.WithString("text", mcp.Required(), mcp.Description("Reply body")),
+			mcp.WithString("text", mcp.Required(), mcp.Description("Reply body (1-2048 chars)")),
 			mcp.WithReadOnlyHintAnnotation(false),
 			mcp.WithDestructiveHintAnnotation(false),
 		),
-		notImplementedHandler,
+		s.handleCommentsReply,
 	)
 
 	// canva_comments_thread — read-only fetch of a thread + its replies.
 	s.mcp.AddTool(
 		mcp.NewTool("canva_comments_thread",
-			mcp.WithDescription("Fetch a comment thread and its replies."),
+			mcp.WithDescription("Fetch a Canva comment thread and its replies. Refreshes the local cache. The thread must be locally cached (so its design ID is known) OR pass design_id_or_name."),
 			mcp.WithString("thread_id", mcp.Required(), mcp.Description("Comment thread ID")),
+			mcp.WithString("design_id_or_name", mcp.Description("Override the cached design-id lookup (required when the thread isn't yet cached)")),
 			mcp.WithReadOnlyHintAnnotation(true),
 			mcp.WithDestructiveHintAnnotation(false),
 		),
-		notImplementedHandler,
+		s.handleCommentsThread,
 	)
 
-	// canva_comments_archive — local-cache archival walk. Read-only against Canva.
+	// canva_comments_archive — re-walk every locally-known thread on a
+	// design (or across all designs when omitted). Read-only against Canva,
+	// refreshes the local cache.
 	s.mcp.AddTool(
 		mcp.NewTool("canva_comments_archive",
-			mcp.WithDescription("Archive locally cached comment threads (drops them from the local cache)."),
+			mcp.WithDescription("Archive locally-known comment threads. Re-fetches each thread + replies fresh from the Canva API and returns them as JSON. NOTE: only threads canvacli has interacted with are visible — the Canva Connect API does not expose a list-threads endpoint. Threads created in the Canva web UI must first be pulled in via canva_comments_thread."),
 			mcp.WithString("design_id_or_name", mcp.Description("Limit archival to one design's threads")),
 			mcp.WithReadOnlyHintAnnotation(true),
 			mcp.WithDestructiveHintAnnotation(false),
 		),
-		notImplementedHandler,
+		s.handleCommentsArchive,
 	)
 
 	// canva_create — was skipped in v1.1 because creating a design is a
 	// write that downstream tools may not be able to undo cleanly.
 	// destructiveHint=true per the v1.1 fix pattern.
+	// Implementation in handlers_sync_search.go (handleCreate).
 	s.mcp.AddTool(
 		mcp.NewTool("canva_create",
-			mcp.WithDescription("Create a new Canva design from a brand template + autofill JSON (Enterprise)."),
+			mcp.WithDescription("Create a new Canva design from a brand template + autofill JSON (Enterprise). The autofill argument MUST be inline JSON — no file path support over MCP. Pair with canva_assets_upload to source images programmatically (spec §10)."),
 			mcp.WithString("template", mcp.Required(), mcp.Description("Template ID or exact name")),
-			mcp.WithString("autofill", mcp.Required(), mcp.Description("Path to JSON file with autofill data, or inline JSON")),
+			mcp.WithString("autofill", mcp.Required(), mcp.Description("Inline JSON autofill data (the shape returned by canva_templates_show)")),
 			mcp.WithString("title", mcp.Description("Title for the new design")),
-			mcp.WithString("folder", mcp.Description("Target folder ID")),
 			mcp.WithReadOnlyHintAnnotation(false),
 			mcp.WithDestructiveHintAnnotation(true),
 		),
-		notImplementedHandler,
+		s.handleCreate,
 	)
 
 	// canva_templates_list — read-only listing of brand templates.
+	// Implementation in handlers_sync_search.go (handleTemplatesList).
 	s.mcp.AddTool(
 		mcp.NewTool("canva_templates_list",
-			mcp.WithDescription("List the user's brand templates (Enterprise)."),
+			mcp.WithDescription("List the user's brand templates (Enterprise). Each list pass also refreshes the local templates cache used by name resolution."),
 			mcp.WithReadOnlyHintAnnotation(true),
 			mcp.WithDestructiveHintAnnotation(false),
 		),
-		notImplementedHandler,
+		s.handleTemplatesList,
 	)
 
 	// canva_templates_show — read-only fetch of a template's autofill dataset.
+	// Implementation in handlers_sync_search.go (handleTemplatesShow).
 	s.mcp.AddTool(
 		mcp.NewTool("canva_templates_show",
-			mcp.WithDescription("Show a brand template's autofill dataset (the JSON shape for canva_create)."),
+			mcp.WithDescription("Show a brand template's autofill dataset — the JSON shape that canva_create's autofill argument must match."),
 			mcp.WithString("template_id_or_name", mcp.Required(), mcp.Description("Template ID or exact name")),
 			mcp.WithReadOnlyHintAnnotation(true),
 			mcp.WithDestructiveHintAnnotation(false),
 		),
-		notImplementedHandler,
+		s.handleTemplatesShow,
 	)
 }

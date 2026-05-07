@@ -20,8 +20,3 @@ func newV2Stub(use, short string) *cobra.Command {
 	}
 }
 
-// NewComments is the parent command for comment-thread operations.
-// Phase 3b (comments agent) replaces this stub with a real subcommand tree.
-func NewComments() *cobra.Command {
-	return newV2Stub("comments", "Comment thread operations")
-}
