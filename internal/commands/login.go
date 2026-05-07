@@ -33,10 +33,10 @@ func NewLogin() *cobra.Command {
 		Use:   "login",
 		Short: "Authenticate with Canva via OAuth 2.0 PKCE",
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			clientID := os.Getenv("CANVA_CLIENT_ID")
-			clientSecret := os.Getenv("CANVA_CLIENT_SECRET")
-			if clientID == "" || clientSecret == "" {
-				return errors.New("CANVA_CLIENT_ID and CANVA_CLIENT_SECRET must be set (developer app credentials)")
+			cid := clientID()
+			csec := clientSecret()
+			if cid == "" || csec == "" {
+				return errors.New("missing Canva developer credentials — this binary was built without embedded credentials. For local dev, set CANVA_CLIENT_ID and CANVA_CLIENT_SECRET env vars; for the official release, download the binary from https://github.com/catalinlongevai/canvacli/releases")
 			}
 
 			state := auth.NewState()
@@ -47,8 +47,8 @@ func NewLogin() *cobra.Command {
 			defer cb.Close()
 
 			conf := &oauth2.Config{
-				ClientID:     clientID,
-				ClientSecret: clientSecret,
+				ClientID:     cid,
+				ClientSecret: csec,
 				Endpoint: oauth2.Endpoint{
 					AuthURL:  canvaAuthURL,
 					TokenURL: canvaTokenURL,

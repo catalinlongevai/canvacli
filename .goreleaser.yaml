@@ -20,6 +20,8 @@ builds:
       - -X main.version={{.Version}}
       - -X main.commit={{.ShortCommit}}
       - -X main.date={{.Date}}
+      - -X main.canvaClientID={{ .Env.CANVA_PROD_CLIENT_ID }}
+      - -X main.canvaClientSecret={{ .Env.CANVA_PROD_CLIENT_SECRET }}
 
 archives:
   - format: tar.gz

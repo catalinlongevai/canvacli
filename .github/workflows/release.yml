@@ -28,6 +28,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          CANVA_PROD_CLIENT_ID: ${{ secrets.CANVA_PROD_CLIENT_ID }}
+          CANVA_PROD_CLIENT_SECRET: ${{ secrets.CANVA_PROD_CLIENT_SECRET }}
       - name: Smoke test linux binary
         run: |
           ARCHIVE=$(ls dist/canvacli_*_linux_amd64.tar.gz | head -1)

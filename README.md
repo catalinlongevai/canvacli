@@ -44,17 +44,26 @@ canva export "Social Post (autofilled)" --format pdf
 
 `canva create` and `canva templates` rely on Canva Connect endpoints that are gated to **Canva Enterprise** customers. The rest of the CLI works on any account.
 
-## Setup for development
+## Quick start (release binary)
 
-The OAuth flow requires a registered Canva developer app. Set environment variables before running `canva login`:
+```bash
+brew install catalinlongevai/tap/canvacli
+canva login
+```
+
+That's it. The release binary embeds the OAuth client credentials so you only need a Canva account, not a developer app.
+
+## Setup for local development (building from source)
+
+If you're building from source and want to run `canva login`, you'll need to register a Canva developer app yourself and set environment variables before running:
 
 ```bash
 export CANVA_CLIENT_ID="..."
 export CANVA_CLIENT_SECRET="..."
-canva login
+go run ./cmd/canvacli login
 ```
 
-(In v1.x these will be embedded into the binary at build time via ldflags.)
+Required dev-app config: PKCE enabled, redirect URIs `http://127.0.0.1:8765/callback`, `:8766/callback`, `:8767/callback`, scopes `design:meta:read design:content:read design:content:write brandtemplate:meta:read brandtemplate:content:read folder:read profile:read`.
 
 ## Agent integration
 

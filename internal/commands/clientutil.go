@@ -25,11 +25,9 @@ func loadClient(ctx context.Context) (*api.Client, error) {
 		}
 		return nil, err
 	}
-	clientID := os.Getenv("CANVA_CLIENT_ID")
-	clientSecret := os.Getenv("CANVA_CLIENT_SECRET")
 	conf := &oauth2.Config{
-		ClientID:     clientID,
-		ClientSecret: clientSecret,
+		ClientID:     clientID(),
+		ClientSecret: clientSecret(),
 		Endpoint:     oauth2.Endpoint{TokenURL: canvaTokenURL},
 	}
 	src := oauth2.ReuseTokenSource(tok, conf.TokenSource(ctx, tok))
