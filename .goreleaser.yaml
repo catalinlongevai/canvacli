@@ -7,7 +7,7 @@ before:
 builds:
   - id: canvacli
     main: ./cmd/canvacli
-    binary: canvacli
+    binary: canva
     env:
       - CGO_ENABLED=0
     goos: [linux, darwin, windows]
@@ -48,14 +48,14 @@ changelog:
 brews:
   - name: canvacli
     repository:
-      owner: catalinlongevai
+      owner: catancs
       name: homebrew-tap
       token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
     homepage: https://github.com/catalinlongevai/canvacli
     description: Agent-first CLI for the Canva Connect API
     license: MIT
     test: |
-      system "#{bin}/canvacli --version"
+      system "#{bin}/canva --version"
     install: |
-      bin.install "canvacli"
+      bin.install "canva"
     skip_upload: auto
