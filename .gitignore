@@ -1,0 +1,10 @@
+/canvacli
+/canvacli-*
+dist/
+*.db
+*.log
+.env
+.DS_Store
+*.test
+*.out
+coverage.out
