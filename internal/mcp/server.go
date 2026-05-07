@@ -47,6 +47,8 @@ func (s *Server) registerTools() {
 	s.mcp.AddTool(
 		mcp.NewTool("canva_whoami",
 			mcp.WithDescription("Return the authenticated Canva user (id, team_id, display_name)."),
+			mcp.WithReadOnlyHintAnnotation(true),
+			mcp.WithDestructiveHintAnnotation(false),
 		),
 		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 			u, err := s.api.MeWithProfile(ctx)
@@ -64,6 +66,8 @@ func (s *Server) registerTools() {
 			mcp.WithDescription("List the user's Canva designs as JSON. Returns id, title, updated_at by default."),
 			mcp.WithNumber("limit", mcp.Description("Max designs to return (1-100, default 20)")),
 			mcp.WithString("fields", mcp.Description("Comma-separated field list, or 'all'. Default: id,title,updated_at")),
+			mcp.WithReadOnlyHintAnnotation(true),
+			mcp.WithDestructiveHintAnnotation(false),
 		),
 		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 			args := req.GetArguments()
@@ -101,6 +105,8 @@ func (s *Server) registerTools() {
 	s.mcp.AddTool(
 		mcp.NewTool("canva_folders",
 			mcp.WithDescription("List folders in the user's Canva account by walking 'root' and 'uploads'."),
+			mcp.WithReadOnlyHintAnnotation(true),
+			mcp.WithDestructiveHintAnnotation(false),
 		),
 		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 			out := []map[string]any{}
@@ -127,6 +133,8 @@ func (s *Server) registerTools() {
 			mcp.WithString("design_id_or_name", mcp.Required(), mcp.Description("Design ID or exact title")),
 			mcp.WithString("format", mcp.Required(), mcp.Description("pdf|png|jpg|mp4|gif")),
 			mcp.WithString("output_path", mcp.Description("Output file path. Default: <design_id>.<format>")),
+			mcp.WithDestructiveHintAnnotation(false),
+			mcp.WithIdempotentHintAnnotation(true),
 		),
 		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 			args := req.GetArguments()
@@ -172,6 +180,8 @@ func (s *Server) registerTools() {
 			mcp.WithDescription("Execute a read-only SQL query against the local cache (designs, templates, folders, idempotency tables). SELECT and WITH...SELECT only."),
 			mcp.WithString("query", mcp.Required(), mcp.Description("A single SELECT or WITH...SELECT statement")),
 			mcp.WithNumber("limit", mcp.Description("Max rows (1-10000, default 500)")),
+			mcp.WithReadOnlyHintAnnotation(true),
+			mcp.WithDestructiveHintAnnotation(false),
 		),
 		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 			args := req.GetArguments()
@@ -197,6 +207,8 @@ func (s *Server) registerTools() {
 		mcp.NewTool("canva_schema",
 			mcp.WithDescription("Return the canvacli command schema as JSON for further introspection."),
 			mcp.WithString("mode", mcp.Description("compact (default) or full")),
+			mcp.WithReadOnlyHintAnnotation(true),
+			mcp.WithDestructiveHintAnnotation(false),
 		),
 		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 			mode, _ := req.GetArguments()["mode"].(string)

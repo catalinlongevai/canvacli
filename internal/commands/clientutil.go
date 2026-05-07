@@ -33,9 +33,13 @@ func loadClient(ctx context.Context) (*api.Client, error) {
 	src := oauth2.ReuseTokenSource(tok, conf.TokenSource(ctx, tok))
 	persisting := auth.NewPersistingSource(src, tokPath)
 
+	var base http.RoundTripper = http.DefaultTransport
+	if FlagDebug() {
+		base = &api.DebugTransport{Base: base}
+	}
 	httpClient := &http.Client{
 		Transport: &auth.RefreshOn401Transport{
-			Base:   &oauth2.Transport{Source: persisting, Base: http.DefaultTransport},
+			Base:   &oauth2.Transport{Source: persisting, Base: base},
 			Source: persisting,
 		},
 	}

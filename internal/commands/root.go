@@ -9,7 +9,11 @@ var (
 	flagNoCache  bool
 	flagQuiet    bool
 	flagAutoWait bool
+	flagDebug    bool
 )
+
+// FlagDebug is read by the API client to enable HTTP request/response logging.
+func FlagDebug() bool { return flagDebug }
 
 func NewRoot(version, commit, date string) *cobra.Command {
 	root := &cobra.Command{
@@ -21,6 +25,7 @@ func NewRoot(version, commit, date string) *cobra.Command {
 	root.PersistentFlags().BoolVar(&flagNoCache, "no-cache", false, "bypass local cache, force API call")
 	root.PersistentFlags().BoolVar(&flagQuiet, "quiet", false, "suppress progress output")
 	root.PersistentFlags().BoolVar(&flagAutoWait, "auto-wait", false, "auto-retry on 429 once, capped at 60s")
+	root.PersistentFlags().BoolVar(&flagDebug, "debug", false, "log HTTP requests/responses to stderr")
 
 	root.AddCommand(NewLogin())
 	root.AddCommand(NewLogout())
