@@ -17,6 +17,11 @@ An agent-first CLI for the Canva Connect API. Local SQLite cache, stable JSON ou
 | `canva folders` | NDJSON listing of folders |
 | `canva schema [--compact\|--full]` | Print the CLI schema as JSON |
 | `canva sql "SELECT ..."` | Read-only SQL against local cache |
+| `canva mcp serve` | Run an MCP server over stdio (Claude Desktop / Cursor / agents) |
+
+## MCP server
+
+Instead of shelling out to `canva`, MCP-capable clients can call canvacli's tools natively. Add `{"mcpServers":{"canva":{"command":"canva","args":["mcp","serve"]}}}` to your Claude Desktop or Cursor config and the agent gets `canva_whoami`, `canva_list`, `canva_folders`, `canva_export`, `canva_sql`, and `canva_schema` as first-class tools. The server reads the same token store as the CLI — run `canva login` from the terminal once before starting the agent.
 
 ## Global flags
 

@@ -101,6 +101,40 @@ The `fix` field contains a literal command the agent can execute verbatim to rec
 
 ---
 
+## MCP server (Claude Desktop, Cursor, etc.)
+
+canvacli ships a built-in MCP server. Add this to your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "canva": {
+      "command": "canva",
+      "args": ["mcp", "serve"]
+    }
+  }
+}
+```
+
+Then restart Claude Desktop. Six new tools become available:
+
+| Tool | Description |
+|---|---|
+| `canva_whoami` | Authenticated user info |
+| `canva_list` | List designs as JSON |
+| `canva_folders` | List folders |
+| `canva_export` | Export a design as PDF/PNG/JPG/MP4/GIF |
+| `canva_sql` | Read-only SQL against the local cache |
+| `canva_schema` | Return the full canvacli schema |
+
+Run `canva login` from the terminal first; the MCP server reads the same token store as the CLI.
+
+### Cursor
+
+Same JSON, in `~/.cursor/mcp.json`.
+
+---
+
 ## How it works
 
 | Layer | Detail |

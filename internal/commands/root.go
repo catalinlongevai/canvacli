@@ -32,6 +32,7 @@ func NewRoot(version, commit, date string) *cobra.Command {
 	root.AddCommand(NewFolders())
 	root.AddCommand(NewSchema())
 	root.AddCommand(NewSQL())
+	root.AddCommand(NewMCP())
 
 	return root
 }

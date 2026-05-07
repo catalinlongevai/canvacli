@@ -6,6 +6,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Added
+- `canva mcp serve` — run an MCP (Model Context Protocol) server over stdio for Claude Desktop, Cursor, and other MCP-capable agents. Exposes six tools that reuse the existing API client and cache without shelling out: `canva_whoami`, `canva_list`, `canva_folders`, `canva_export`, `canva_sql`, `canva_schema`. Reads the same token store as the CLI — run `canva login` first.
+
+### Skipped (deferred to a future release)
+- `canva_create` and `canva_templates` MCP tools — Enterprise-gated and (for `create`) destructive. To be added with explicit confirmation gating.
+
 ## [v1.0.0] - 2026-05-07
 
 First stable release.
