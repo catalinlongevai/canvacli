@@ -51,6 +51,7 @@ brews:
       owner: catancs
       name: homebrew-tap
       token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    directory: Formula
     homepage: https://github.com/catalinlongevai/canvacli
     description: Agent-first CLI for the Canva Connect API
     license: MIT
