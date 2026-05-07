@@ -29,7 +29,21 @@ Run unit tests:
 go test ./...
 ```
 
-Integration tests against the live Canva API are recorded with cassettes — that work is deferred to a v1.x cycle. Until then, manually exercise any non-trivial change against your own Canva account before requesting review. At minimum: `canva login`, the command you touched, and `canva whoami` to confirm token state is intact.
+This includes the cassette-based integration tests in `internal/api/cassette_test.go`, which replay recorded Canva API responses from `internal/api/testdata/cassettes/*.yaml`. CI runs them fully offline.
+
+For commands that lack cassette coverage, manually exercise any non-trivial change against your own Canva account before requesting review. At minimum: `canva login`, the command you touched, and `canva whoami` to confirm token state is intact.
+
+## Re-recording integration cassettes
+
+`internal/api/cassette_test.go` runs against pre-recorded HTTP fixtures in `internal/api/testdata/cassettes/`. To re-record from live Canva (e.g. after Canva ships a breaking API change):
+
+1. Run `canva login` to refresh your access token.
+2. Re-record specific tests:
+   ```bash
+   CANVACLI_RECORD=1 go test ./internal/api/ -run TestVCR_Me -v
+   ```
+3. Inspect the resulting cassette at `internal/api/testdata/cassettes/<name>.yaml` — verify `Authorization: Bearer REDACTED` and no real tokens leaked into bodies.
+4. Commit the updated cassette files.
 
 ## Architecture overview
 

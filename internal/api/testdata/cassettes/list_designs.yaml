@@ -1,0 +1,72 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.canva.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Authorization:
+                - Bearer REDACTED
+        url: https://api.canva.com/rest/v1/designs
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"items":[{"id":"DAF7Q_-7g9Q","title":"Project DW","owner":{"user_id":"oUYg9h3Pkdf23RDFLhSS9M","team_id":"oBYg9b47zrguGohCyAAeYA"},"thumbnail":{"width":595,"height":335,"url":"https://document-export.canva.com/-7g9Q/DAF7Q_-7g9Q/156/thumbnail/0001.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUHWEOTUD6Q%2F20260507%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260507T152908Z&X-Amz-Expires=14015&X-Amz-Signature=3a9179de48aba8eeef5e2f07c1d3d35eee55be1bcd53f5ada60dbcd68e67811e&X-Amz-SignedHeaders=host&response-expires=Thu%2C%2007%20May%202026%2019%3A22%3A43%20GMT"},"urls":{"edit_url":"https://www.canva.com/api/design/REDACTED_TOKEN/edit?utm_source=OC-AZ4Cxr-jQSc0&utm_medium=referral&utm_term=6af3c26e-c888-444c-a17f-2498078d86aa&utm_campaign=public_api_list_design_clicked_hyperlink","view_url":"https://www.canva.com/api/design/REDACTED_TOKEN/view?utm_source=OC-AZ4Cxr-jQSc0&utm_medium=referral&utm_term=d167139e-bc8f-4ca4-b218-7be0350e4323&utm_campaign=public_api_list_design_clicked_hyperlink"},"created_at":1706528394,"updated_at":1773837851,"page_count":13}]}'
+        headers:
+            Accept-Ch:
+                - Sec-CH-UA-Platform-Version
+            Cache-Control:
+                - no-cache, no-store
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9f8223ca0eea8709-AMS
+            Content-Type:
+                - application/json;charset=utf-8
+            Date:
+                - Thu, 07 May 2026 18:03:09 GMT
+            Expires:
+                - Thu, 1 Jan 1970 00:00:00 GMT
+            Nel:
+                - '{"report_to":"cf-nel","success_fraction":0.01,"max_age":604800}'
+            Pragma:
+                - No-cache
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Report-To:
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=RJf4Ccv36vu5JA0A5zNkP8f40tbHgmaqZC0X16%2BmbYQulA1YyTGiCb7ZDiAeGEL4t86yi12vtO5D%2FdwkoBSeQ9zlj9HoT1u1dmo5O0wBJ%2BE0%2FJXxPLy00MnXyitQONM%3D"}]}'
+            Server:
+                - cloudflare
+            Set-Cookie:
+                - REDACTED
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - Origin, accept-encoding
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - 9f8223ca0eea8709
+            X-Xss-Protection:
+                - 1; mode=block
+        status: 200 OK
+        code: 200
+        duration: 216.035209ms

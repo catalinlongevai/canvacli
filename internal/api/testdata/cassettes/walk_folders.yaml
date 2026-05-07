@@ -1,0 +1,212 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.canva.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Authorization:
+                - Bearer REDACTED
+        url: https://api.canva.com/rest/v1/folders/root/items
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"items":[{"type":"folder","folder":{"id":"uploads","name":"Uploads","created_at":1758922246,"updated_at":1758922246}}]}'
+        headers:
+            Accept-Ch:
+                - Sec-CH-UA-Platform-Version
+            Cache-Control:
+                - no-cache, no-store
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9f8223cb5aca8709-AMS
+            Content-Type:
+                - application/json;charset=utf-8
+            Date:
+                - Thu, 07 May 2026 18:03:10 GMT
+            Expires:
+                - Thu, 1 Jan 1970 00:00:00 GMT
+            Nel:
+                - '{"report_to":"cf-nel","success_fraction":0.01,"max_age":604800}'
+            Pragma:
+                - No-cache
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Report-To:
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=skFNlPI2rDOQ7fCcZQxaTOnUkftgNTVfSs4h4aKe%2BzF%2BPVnu8bgNodeCP%2FjeXsf262rZFgGERxm2s7U7Oof7sJCwF%2B1xZyGvbMWpw5j743E16X0UABVBeqeB6dQ05Qw%3D"}]}'
+            Server:
+                - cloudflare
+            Set-Cookie:
+                - REDACTED
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - Origin, accept-encoding
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - 9f8223cb5aca8709
+            X-Xss-Protection:
+                - 1; mode=block
+        status: 200 OK
+        code: 200
+        duration: 226.447584ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.canva.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Authorization:
+                - Bearer REDACTED
+        url: https://api.canva.com/rest/v1/folders/uploads/items
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"items":[{"type":"image","image":{"type":"image","id":"MAF7cITjZPY","name":"image.png","tags":[],"created_at":1706688831,"updated_at":1706688832,"thumbnail":{"width":200,"height":124,"url":"https://media.canva.com/v2/image-resize/format:PNG/height:124/quality:100/uri:ifs%3A%2F%2FM%2Fc5608789-7d9e-447a-ab0b-ee42503300a0/watermark:F/width:200?csig=AAAAAAAAAAAAAAAAAAAAAB9M3kLIjP0JjrClrELJTp1GF8i0Av5I88xu6s8yKxCP&exp=1778193889&osig=AAAAAAAAAAAAAAAAAAAAABirroefQ9z5xZbUr2pXiokko-hqP1yYmX1_OEOsEzH9&signer=media-rpc&x-canva-quality=thumbnail"}}},{"type":"image","image":{"type":"image","id":"MAF7cAALajs","name":"image.png","tags":[],"created_at":1706688357,"updated_at":1706688359,"thumbnail":{"width":200,"height":79,"url":"https://media.canva.com/v2/image-resize/format:PNG/height:79/quality:100/uri:ifs%3A%2F%2FM%2F51fc62f6-8ae5-4541-98ec-be7142042239/watermark:F/width:200?csig=AAAAAAAAAAAAAAAAAAAAAPTsW4D3bAdanizRXm70jMhIq9m_h3gKd32lA5UQKnYh&exp=1778194057&osig=AAAAAAAAAAAAAAAAAAAAAFV5UeVQcAhTTZ-pg7QWsr9WyKU0aSXGMg7XWksRMS2M&signer=media-rpc&x-canva-quality=thumbnail"}}},{"type":"image","image":{"type":"image","id":"MAF7cFYXp10","name":"image.png","tags":[],"created_at":1706688037,"updated_at":1706688039,"thumbnail":{"width":200,"height":79,"url":"https://media.canva.com/v2/image-resize/format:PNG/height:79/quality:100/uri:ifs%3A%2F%2FM%2F171a2c3e-2f75-4fbb-a8ac-230c29bacb28/watermark:F/width:200?csig=AAAAAAAAAAAAAAAAAAAAAGy1ouoxACXdMDDg9jKIXnW8HnIJ__T9Zh4yA6FV-vG7&exp=1778191876&osig=AAAAAAAAAAAAAAAAAAAAAJqaEDFtXg1gNvRoM3QtIITKMuR3vml2lqHDQdAlXuku&signer=media-rpc&x-canva-quality=thumbnail"}}},{"type":"image","image":{"type":"image","id":"MAF7bxFYDh8","name":"image.png","tags":[],"created_at":1706687800,"updated_at":1706687802,"thumbnail":{"width":200,"height":79,"url":"https://media.canva.com/v2/image-resize/format:PNG/height:79/quality:100/uri:ifs%3A%2F%2FM%2F380b753c-b0ac-4420-bea8-04511e7cde47/watermark:F/width:200?csig=AAAAAAAAAAAAAAAAAAAAAAPQL4Bcv079RuQFREWWfjjkAARnWGSCecMQgZjIfMqo&exp=1778193146&osig=AAAAAAAAAAAAAAAAAAAAAPOeqxwzfu1EIyDBqlGYA46GmjTr17uIzN_mmz4k6khT&signer=media-rpc&x-canva-quality=thumbnail"}}}]}'
+        headers:
+            Accept-Ch:
+                - Sec-CH-UA-Platform-Version
+            Cache-Control:
+                - no-cache, no-store
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9f8223cccea28709-AMS
+            Content-Type:
+                - application/json;charset=utf-8
+            Date:
+                - Thu, 07 May 2026 18:03:10 GMT
+            Expires:
+                - Thu, 1 Jan 1970 00:00:00 GMT
+            Nel:
+                - '{"report_to":"cf-nel","success_fraction":0.01,"max_age":604800}'
+            Pragma:
+                - No-cache
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Report-To:
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=qMkcchCaMoaCLoXbKgGeMI8V5LJIdErKQ1fp9SwFkcnj5YV%2Bqr6%2ByG1M%2B2pOKopdWLr2ePK023l4boWARO9ht0LB7Km42XJBql61lsT%2FAeah738bDG8BK3x%2FJMjdTWs%3D"}]}'
+            Server:
+                - cloudflare
+            Set-Cookie:
+                - REDACTED
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - Origin, accept-encoding
+            X-Canva-Trace-Id:
+                - 69fcd3de5f47b8a72c7f4cd085a73b1e
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - 9f8223cccea28709
+            X-Xss-Protection:
+                - 1; mode=block
+        status: 200 OK
+        code: 200
+        duration: 209.711875ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.canva.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Authorization:
+                - Bearer REDACTED
+        url: https://api.canva.com/rest/v1/folders/uploads/items
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"items":[{"type":"image","image":{"type":"image","id":"MAF7cITjZPY","name":"image.png","tags":[],"created_at":1706688831,"updated_at":1706688832,"thumbnail":{"width":200,"height":124,"url":"https://media.canva.com/v2/image-resize/format:PNG/height:124/quality:100/uri:ifs%3A%2F%2FM%2Fc5608789-7d9e-447a-ab0b-ee42503300a0/watermark:F/width:200?csig=AAAAAAAAAAAAAAAAAAAAAB9M3kLIjP0JjrClrELJTp1GF8i0Av5I88xu6s8yKxCP&exp=1778193889&osig=AAAAAAAAAAAAAAAAAAAAABirroefQ9z5xZbUr2pXiokko-hqP1yYmX1_OEOsEzH9&signer=media-rpc&x-canva-quality=thumbnail"}}},{"type":"image","image":{"type":"image","id":"MAF7cAALajs","name":"image.png","tags":[],"created_at":1706688357,"updated_at":1706688359,"thumbnail":{"width":200,"height":79,"url":"https://media.canva.com/v2/image-resize/format:PNG/height:79/quality:100/uri:ifs%3A%2F%2FM%2F51fc62f6-8ae5-4541-98ec-be7142042239/watermark:F/width:200?csig=AAAAAAAAAAAAAAAAAAAAAPTsW4D3bAdanizRXm70jMhIq9m_h3gKd32lA5UQKnYh&exp=1778194057&osig=AAAAAAAAAAAAAAAAAAAAAFV5UeVQcAhTTZ-pg7QWsr9WyKU0aSXGMg7XWksRMS2M&signer=media-rpc&x-canva-quality=thumbnail"}}},{"type":"image","image":{"type":"image","id":"MAF7cFYXp10","name":"image.png","tags":[],"created_at":1706688037,"updated_at":1706688039,"thumbnail":{"width":200,"height":79,"url":"https://media.canva.com/v2/image-resize/format:PNG/height:79/quality:100/uri:ifs%3A%2F%2FM%2F171a2c3e-2f75-4fbb-a8ac-230c29bacb28/watermark:F/width:200?csig=AAAAAAAAAAAAAAAAAAAAAGy1ouoxACXdMDDg9jKIXnW8HnIJ__T9Zh4yA6FV-vG7&exp=1778191876&osig=AAAAAAAAAAAAAAAAAAAAAJqaEDFtXg1gNvRoM3QtIITKMuR3vml2lqHDQdAlXuku&signer=media-rpc&x-canva-quality=thumbnail"}}},{"type":"image","image":{"type":"image","id":"MAF7bxFYDh8","name":"image.png","tags":[],"created_at":1706687800,"updated_at":1706687802,"thumbnail":{"width":200,"height":79,"url":"https://media.canva.com/v2/image-resize/format:PNG/height:79/quality:100/uri:ifs%3A%2F%2FM%2F380b753c-b0ac-4420-bea8-04511e7cde47/watermark:F/width:200?csig=AAAAAAAAAAAAAAAAAAAAAAPQL4Bcv079RuQFREWWfjjkAARnWGSCecMQgZjIfMqo&exp=1778193146&osig=AAAAAAAAAAAAAAAAAAAAAPOeqxwzfu1EIyDBqlGYA46GmjTr17uIzN_mmz4k6khT&signer=media-rpc&x-canva-quality=thumbnail"}}}]}'
+        headers:
+            Accept-Ch:
+                - Sec-CH-UA-Platform-Version
+            Cache-Control:
+                - no-cache, no-store
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9f8223ce1ab28709-AMS
+            Content-Type:
+                - application/json;charset=utf-8
+            Date:
+                - Thu, 07 May 2026 18:03:10 GMT
+            Expires:
+                - Thu, 1 Jan 1970 00:00:00 GMT
+            Nel:
+                - '{"report_to":"cf-nel","success_fraction":0.01,"max_age":604800}'
+            Pragma:
+                - No-cache
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Report-To:
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=aN0pyEj3G8o3EaE4TmNcRrN%2Fq%2BV3eY%2F070KIHZa%2FA96veybn9j7zGY4UKhSYSmOcmAsnH0oyZ%2B%2FkAULODwlYGLyn68Nybz0orFufrh4r98KwTlCtpEKjrrPPEn614Ko%3D"}]}'
+            Server:
+                - cloudflare
+            Set-Cookie:
+                - REDACTED
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - Origin, accept-encoding
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - 9f8223ce1ab28709
+            X-Xss-Protection:
+                - 1; mode=block
+        status: 200 OK
+        code: 200
+        duration: 194.837334ms

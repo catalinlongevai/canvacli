@@ -1,0 +1,419 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 51
+        transfer_encoding: []
+        trailer: {}
+        host: api.canva.com
+        remote_addr: ""
+        request_uri: ""
+        body: '{"design_id":"DAF7Q_-7g9Q","format":{"type":"pdf"}}'
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Authorization:
+                - Bearer REDACTED
+            Content-Type:
+                - application/json
+        url: https://api.canva.com/rest/v1/exports
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"job":{"id":"798ec0ed-d06d-43eb-b735-d3d1b252d3e4","status":"in_progress"}}'
+        headers:
+            Accept-Ch:
+                - Sec-CH-UA-Platform-Version
+            Cache-Control:
+                - no-cache, no-store
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9f8223cf5e788709-AMS
+            Content-Type:
+                - application/json;charset=utf-8
+            Date:
+                - Thu, 07 May 2026 18:03:11 GMT
+            Expires:
+                - Thu, 1 Jan 1970 00:00:00 GMT
+            Nel:
+                - '{"report_to":"cf-nel","success_fraction":0.01,"max_age":604800}'
+            Pragma:
+                - No-cache
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Report-To:
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=o47j3NT63ae5B%2BHXOAcNtR6OCr9Ctr%2BiNftK6X7ipvXCvleqZXr5whAOQy0AAKML%2BA%2Bx4oEvk6xW%2FiXgd6xPe06ZcQEEPT89Q0Xn%2BJq6OmOOP25E1y3jNnPUC33Wew8%3D"}]}'
+            Server:
+                - cloudflare
+            Set-Cookie:
+                - REDACTED
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - Origin, accept-encoding
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - 9f8223cf5e788709
+            X-Xss-Protection:
+                - 1; mode=block
+        status: 200 OK
+        code: 200
+        duration: 595.978916ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.canva.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Authorization:
+                - Bearer REDACTED
+        url: https://api.canva.com/rest/v1/exports/798ec0ed-d06d-43eb-b735-d3d1b252d3e4
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"job":{"id":"798ec0ed-d06d-43eb-b735-d3d1b252d3e4","status":"in_progress"}}'
+        headers:
+            Accept-Ch:
+                - Sec-CH-UA-Platform-Version
+            Cache-Control:
+                - no-cache, no-store
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9f8223d309148709-AMS
+            Content-Type:
+                - application/json;charset=utf-8
+            Date:
+                - Thu, 07 May 2026 18:03:11 GMT
+            Expires:
+                - Thu, 1 Jan 1970 00:00:00 GMT
+            Nel:
+                - '{"report_to":"cf-nel","success_fraction":0.01,"max_age":604800}'
+            Pragma:
+                - No-cache
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Report-To:
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=UtoT4TNAdfodthLcTISOrPNkIT74hi4Ga48EDPk5FUKvahVeVO%2FRdfq%2BGTkV9p3y8jQ9Q6H7PbLWsfW76JgNKYnqgaLlBPN4Od%2FGX%2BVyDbfWRtpYRB72kuAM%2FrRoj1U%3D"}]}'
+            Server:
+                - cloudflare
+            Set-Cookie:
+                - REDACTED
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - Origin, accept-encoding
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - 9f8223d309148709
+            X-Xss-Protection:
+                - 1; mode=block
+        status: 200 OK
+        code: 200
+        duration: 153.681292ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.canva.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Authorization:
+                - Bearer REDACTED
+        url: https://api.canva.com/rest/v1/exports/798ec0ed-d06d-43eb-b735-d3d1b252d3e4
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"job":{"id":"798ec0ed-d06d-43eb-b735-d3d1b252d3e4","status":"in_progress"}}'
+        headers:
+            Accept-Ch:
+                - Sec-CH-UA-Platform-Version
+            Cache-Control:
+                - no-cache, no-store
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9f8223d59ffa8709-AMS
+            Content-Type:
+                - application/json;charset=utf-8
+            Date:
+                - Thu, 07 May 2026 18:03:11 GMT
+            Expires:
+                - Thu, 1 Jan 1970 00:00:00 GMT
+            Nel:
+                - '{"report_to":"cf-nel","success_fraction":0.01,"max_age":604800}'
+            Pragma:
+                - No-cache
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Report-To:
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=xGzkVuSOOpVaYXNWz4%2B80XgNa9dhNW0s8ja2Lfd9R0Dz%2BOVZsy0P4HbHz2hj6KD7WCw6gxEg1De74%2FPTcgnOZJaMN%2FhvRjproX2KFOsL4tBX3n8XEvPNYaMwfI5bvsk%3D"}]}'
+            Server:
+                - cloudflare
+            Set-Cookie:
+                - REDACTED
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - Origin, accept-encoding
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - 9f8223d59ffa8709
+            X-Xss-Protection:
+                - 1; mode=block
+        status: 200 OK
+        code: 200
+        duration: 154.417708ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.canva.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Authorization:
+                - Bearer REDACTED
+        url: https://api.canva.com/rest/v1/exports/798ec0ed-d06d-43eb-b735-d3d1b252d3e4
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"job":{"id":"798ec0ed-d06d-43eb-b735-d3d1b252d3e4","status":"in_progress"}}'
+        headers:
+            Accept-Ch:
+                - Sec-CH-UA-Platform-Version
+            Cache-Control:
+                - no-cache, no-store
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9f8223d9abdd8709-AMS
+            Content-Type:
+                - application/json;charset=utf-8
+            Date:
+                - Thu, 07 May 2026 18:03:12 GMT
+            Expires:
+                - Thu, 1 Jan 1970 00:00:00 GMT
+            Nel:
+                - '{"report_to":"cf-nel","success_fraction":0.01,"max_age":604800}'
+            Pragma:
+                - No-cache
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Report-To:
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=hYdQ0h6J880Q57qMDxShMm7S1x5PIPbgT9ANHunAFxiS2Obc71O2KLLraCL0BxI4weAWX2W%2Bq8nJ2vuS39uLARuIxaJIol%2FDYBqtoWAw%2Bho%2FFgiZsrY31jfG6Zpz2G8%3D"}]}'
+            Server:
+                - cloudflare
+            Set-Cookie:
+                - REDACTED
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - Origin, accept-encoding
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - 9f8223d9abdd8709
+            X-Xss-Protection:
+                - 1; mode=block
+        status: 200 OK
+        code: 200
+        duration: 148.27375ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.canva.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Authorization:
+                - Bearer REDACTED
+        url: https://api.canva.com/rest/v1/exports/798ec0ed-d06d-43eb-b735-d3d1b252d3e4
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"job":{"id":"798ec0ed-d06d-43eb-b735-d3d1b252d3e4","status":"in_progress"}}'
+        headers:
+            Accept-Ch:
+                - Sec-CH-UA-Platform-Version
+            Cache-Control:
+                - no-cache, no-store
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9f8223e0de4e8709-AMS
+            Content-Type:
+                - application/json;charset=utf-8
+            Date:
+                - Thu, 07 May 2026 18:03:13 GMT
+            Expires:
+                - Thu, 1 Jan 1970 00:00:00 GMT
+            Nel:
+                - '{"report_to":"cf-nel","success_fraction":0.01,"max_age":604800}'
+            Pragma:
+                - No-cache
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Report-To:
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=sYcYgX4S5nsbadPR9uLJiJ4mCWYNuZlaEzLQ47o8JiLvxmKzV5PgWwvm1%2F%2F8RA7yVzrvwqIz3L0iyrzQ7hI7FWuA1yKLTW5O4h8O8MYvR7GaO%2FyQgo%2FrVshlCQLfLGY%3D"}]}'
+            Server:
+                - cloudflare
+            Set-Cookie:
+                - REDACTED
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - Origin, accept-encoding
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - 9f8223e0de4e8709
+            X-Xss-Protection:
+                - 1; mode=block
+        status: 200 OK
+        code: 200
+        duration: 148.8555ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.canva.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Authorization:
+                - Bearer REDACTED
+        url: https://api.canva.com/rest/v1/exports/798ec0ed-d06d-43eb-b735-d3d1b252d3e4
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"job":{"id":"798ec0ed-d06d-43eb-b735-d3d1b252d3e4","status":"success","urls":["https://export-download.canva.com/-7g9Q/DAF7Q_-7g9Q/-1/0-2420061386043999949.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260506%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260506T194601Z&X-Amz-Expires=86355&X-Amz-Signature=7390b72256c03486a3ba225fb0de07eca2d4166362ac121ea1c9c52ab996404b&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Thu%2C%2007%20May%202026%2019%3A45%3A16%20GMT"]}}'
+        headers:
+            Accept-Ch:
+                - Sec-CH-UA-Platform-Version
+            Cache-Control:
+                - no-cache, no-store
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9f8223ee49408709-AMS
+            Content-Type:
+                - application/json;charset=utf-8
+            Date:
+                - Thu, 07 May 2026 18:03:15 GMT
+            Expires:
+                - Thu, 1 Jan 1970 00:00:00 GMT
+            Nel:
+                - '{"report_to":"cf-nel","success_fraction":0.01,"max_age":604800}'
+            Pragma:
+                - No-cache
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Report-To:
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=Pw93sZe8GsU1F%2B8rP7fsc1WQxFTyUbkep9gBbk4f2pge2LZ%2Fc%2FESGLedAWDXx7Syvo2zfSEQn6suVw%2BRLpAVbwAzLnZ7BY%2FKuK%2FIWXdG3sGvX8%2Fn%2BTjAge%2BNL0%2BeFt4%3D"}]}'
+            Server:
+                - cloudflare
+            Set-Cookie:
+                - REDACTED
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - Origin, accept-encoding
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - 9f8223ee49408709
+            X-Xss-Protection:
+                - 1; mode=block
+        status: 200 OK
+        code: 200
+        duration: 158.468959ms
