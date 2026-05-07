@@ -315,16 +315,17 @@ func (s *Server) registerV2Stubs() {
 	)
 
 	// canva_import — creates a new Canva design from a local file. Not destructive (new resource).
+	// Routes by extension (spec §8): images/videos → /v1/asset-uploads,
+	// documents → /v1/imports.
 	s.mcp.AddTool(
 		mcp.NewTool("canva_import",
-			mcp.WithDescription("Import a local PDF/PPTX/DOCX/image as a new Canva design."),
-			mcp.WithString("file", mcp.Required(), mcp.Description("Path to the local file to import")),
-			mcp.WithString("title", mcp.Description("Title for the new design")),
-			mcp.WithString("folder", mcp.Description("Target folder ID")),
+			mcp.WithDescription("Import a local PDF/PPTX/DOCX/etc as a new Canva design. Image and video files are routed to the asset library instead. Pass an absolute file path."),
+			mcp.WithString("file", mcp.Required(), mcp.Description("Absolute path to the local file to import")),
+			mcp.WithString("mime_type", mcp.Description("Override mime sniffing for the imports endpoint")),
 			mcp.WithReadOnlyHintAnnotation(false),
 			mcp.WithDestructiveHintAnnotation(false),
 		),
-		notImplementedHandler,
+		s.handleImport,
 	)
 
 	// canva_resize — creates a new design at a different size. Not destructive (new resource).
@@ -379,13 +380,13 @@ func (s *Server) registerV2Stubs() {
 	// canva_assets_upload — uploads a new asset. Not destructive.
 	s.mcp.AddTool(
 		mcp.NewTool("canva_assets_upload",
-			mcp.WithDescription("Upload a local file (image/video/audio) to the user's Canva asset library."),
-			mcp.WithString("file", mcp.Required(), mcp.Description("Path to the local file to upload")),
+			mcp.WithDescription("Upload a local file (image/video) to the user's Canva asset library. Returns the asset_id which can be passed directly to canva_create's autofill data as DatasetImageValue.asset_id (spec §10)."),
+			mcp.WithString("file", mcp.Required(), mcp.Description("Absolute path to the local file to upload")),
 			mcp.WithString("name", mcp.Description("Display name for the asset (default: filename)")),
 			mcp.WithReadOnlyHintAnnotation(false),
 			mcp.WithDestructiveHintAnnotation(false),
 		),
-		notImplementedHandler,
+		s.handleAssetsUpload,
 	)
 
 	// canva_comments_add — posts a new top-level comment. Not destructive.

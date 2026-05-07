@@ -20,30 +20,6 @@ func newV2Stub(use, short string) *cobra.Command {
 	}
 }
 
-// NewSync is the v2 "all-in-one" mirror command.
-// Phase 3b (sync agent) replaces this stub.
-func NewSync() *cobra.Command {
-	return newV2Stub("sync", "Mirror your Canva account into local SQLite (all-in-one)")
-}
-
-// NewSearch is the FTS5-backed search command.
-// Phase 3b (search agent) replaces this stub.
-func NewSearch() *cobra.Command {
-	return newV2Stub("search [query]", "FTS5 search across mirrored designs, comments, assets, templates")
-}
-
-// NewImport imports a local file as a Canva design.
-// Phase 3b (import agent) replaces this stub.
-func NewImport() *cobra.Command {
-	return newV2Stub("import <file>", "Import a PDF/PPTX/DOCX/image as a Canva design")
-}
-
-// NewAssets is the parent command for asset-library operations.
-// Phase 3b (assets agent) replaces this stub with a real subcommand tree.
-func NewAssets() *cobra.Command {
-	return newV2Stub("assets", "Asset library operations")
-}
-
 // NewComments is the parent command for comment-thread operations.
 // Phase 3b (comments agent) replaces this stub with a real subcommand tree.
 func NewComments() *cobra.Command {
