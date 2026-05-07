@@ -22,17 +22,12 @@ type ExportResult struct {
 }
 
 func (c *Client) CreateExport(ctx context.Context, req ExportRequest) (*ExportResult, error) {
-	resp, err := c.doCtx(ctx, http.MethodPost, "/exports", req)
-	if err != nil {
-		return nil, err
-	}
-	type submit struct {
+	var s struct {
 		Job struct {
 			ID string `json:"id"`
 		} `json:"job"`
 	}
-	var s submit
-	if err := decodeJSON(resp, &s); err != nil {
+	if err := c.doJSON(ctx, http.MethodPost, "/exports", req, &s); err != nil {
 		return nil, err
 	}
 	res, err := PollJob[ExportResult](ctx, c, "/exports/"+s.Job.ID, PollOptions{
@@ -46,6 +41,9 @@ func (c *Client) CreateExport(ctx context.Context, req ExportRequest) (*ExportRe
 	return &res, nil
 }
 
+// DownloadTo downloads a single export URL to outPath. Streams to disk.
+// No Authorization header is sent — Canva export download URLs are S3
+// signed URLs that reject Bearer tokens (sending one would also leak it).
 func (c *Client) DownloadTo(ctx context.Context, urlStr, outPath string) error {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, urlStr, nil)
 	if err != nil {
@@ -56,6 +54,13 @@ func (c *Client) DownloadTo(ctx context.Context, urlStr, outPath string) error {
 		return err
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return &APIError{
+			Code:       "download_failed",
+			Message:    "export download returned " + http.StatusText(resp.StatusCode) + " (the URL likely expired — exports are valid for 24h)",
+			HTTPStatus: resp.StatusCode,
+		}
+	}
 	f, err := os.Create(outPath)
 	if err != nil {
 		return err
@@ -64,5 +69,3 @@ func (c *Client) DownloadTo(ctx context.Context, urlStr, outPath string) error {
 	_, err = io.Copy(f, resp.Body)
 	return err
 }
-
-var _ = time.Second

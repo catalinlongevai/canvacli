@@ -17,17 +17,12 @@ type AutofillRequest struct {
 }
 
 func (c *Client) CreateAutofill(ctx context.Context, req AutofillRequest) (*AutofillResult, error) {
-	resp, err := c.doCtx(ctx, http.MethodPost, "/autofills", req)
-	if err != nil {
-		return nil, err
-	}
-	type submit struct {
+	var s struct {
 		Job struct {
 			ID string `json:"id"`
 		} `json:"job"`
 	}
-	var s submit
-	if err := decodeJSON(resp, &s); err != nil {
+	if err := c.doJSON(ctx, http.MethodPost, "/autofills", req, &s); err != nil {
 		return nil, err
 	}
 	res, err := PollJob[AutofillResult](ctx, c, "/autofills/"+s.Job.ID, PollOptions{

@@ -2,8 +2,6 @@ package api
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
@@ -26,16 +24,11 @@ func (c *Client) ListTemplates(ctx context.Context, visit func(BrandTemplate) er
 }
 
 func (c *Client) GetTemplateDataset(ctx context.Context, id string) (*Dataset, error) {
-	resp, err := c.doCtx(ctx, http.MethodGet, "/brand-templates/"+id+"/dataset", nil)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode == http.StatusNotFound {
-		return nil, &APIError{Code: "template_not_found", Message: fmt.Sprintf("template %q not found", id)}
-	}
 	var env Dataset
-	if err := json.NewDecoder(resp.Body).Decode(&env); err != nil {
+	if err := c.doJSON(ctx, http.MethodGet, "/brand-templates/"+id+"/dataset", nil, &env); err != nil {
+		if apiErr, ok := err.(*APIError); ok && apiErr.Code == "not_found" {
+			apiErr.Code = "template_not_found"
+		}
 		return nil, err
 	}
 	return &env, nil
