@@ -159,6 +159,15 @@ Architecture details in [docs/superpowers/specs/](./docs/superpowers/specs/), AP
 brew install catancs/tap/canvacli
 ```
 
+### Upgrading
+
+```bash
+brew update
+brew upgrade canvacli
+```
+
+(Brew caches the tap formula list; `brew update` is required to discover new versions before `brew upgrade`.)
+
 ### Static binary (any platform)
 
 Download from [Releases](https://github.com/catalinlongevai/canvacli/releases). Binaries provided for:
