@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 	"time"
 )
@@ -22,15 +23,11 @@ func DefaultPollOptions() PollOptions {
 	}
 }
 
-type jobEnvelope[T any] struct {
-	Job struct {
-		ID     string    `json:"id"`
-		Status string    `json:"status"`
-		Result T         `json:"result"`
-		Error  *APIError `json:"error,omitempty"`
-	} `json:"job"`
-}
-
+// PollJob polls an async job endpoint until terminal status. On success it
+// decodes T from the entire `job` object — Canva inlines result fields
+// directly into job (e.g. `job.urls` on exports, `job.design` on autofill)
+// rather than nesting under `job.result`. T's JSON tags must therefore
+// match the shape of the inlined response.
 func PollJob[T any](ctx context.Context, c *Client, path string, opts PollOptions) (T, error) {
 	var zero T
 	if opts.Initial == 0 {
@@ -46,24 +43,45 @@ func PollJob[T any](ctx context.Context, c *Client, path string, opts PollOption
 		if err != nil {
 			return zero, err
 		}
-		var env jobEnvelope[T]
-		decErr := json.NewDecoder(resp.Body).Decode(&env)
+		body, readErr := io.ReadAll(resp.Body)
 		resp.Body.Close()
-		if decErr != nil {
-			return zero, decErr
+		if readErr != nil {
+			return zero, readErr
 		}
-		switch env.Job.Status {
+		// First pass: read status from a minimal envelope.
+		var meta struct {
+			Job struct {
+				ID     string    `json:"id"`
+				Status string    `json:"status"`
+				Error  *APIError `json:"error,omitempty"`
+			} `json:"job"`
+		}
+		if err := json.Unmarshal(body, &meta); err != nil {
+			return zero, err
+		}
+		switch meta.Job.Status {
 		case "success":
-			return env.Job.Result, nil
+			// Second pass: extract the entire `job` body and decode T from it.
+			var raw struct {
+				Job json.RawMessage `json:"job"`
+			}
+			if err := json.Unmarshal(body, &raw); err != nil {
+				return zero, err
+			}
+			var result T
+			if err := json.Unmarshal(raw.Job, &result); err != nil {
+				return zero, err
+			}
+			return result, nil
 		case "failed":
-			if env.Job.Error != nil {
-				return zero, env.Job.Error
+			if meta.Job.Error != nil {
+				return zero, meta.Job.Error
 			}
 			return zero, errors.New("job failed without error detail")
 		case "in_progress", "pending", "":
 			// keep polling
 		default:
-			return zero, &APIError{Code: "unknown_job_status", Message: env.Job.Status}
+			return zero, &APIError{Code: "unknown_job_status", Message: meta.Job.Status}
 		}
 		time.Sleep(interval)
 		interval *= 2

@@ -23,7 +23,7 @@ func TestPollJob_SuccessAfterTwoPolls(t *testing.T) {
 			json.NewEncoder(w).Encode(map[string]any{"job": map[string]any{"id": "j1", "status": "in_progress"}})
 			return
 		}
-		json.NewEncoder(w).Encode(map[string]any{"job": map[string]any{"id": "j1", "status": "success", "result": map[string]any{"url": "https://x"}}})
+		json.NewEncoder(w).Encode(map[string]any{"job": map[string]any{"id": "j1", "status": "success", "url": "https://x"}})
 	}))
 	defer srv.Close()
 

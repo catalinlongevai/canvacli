@@ -41,15 +41,22 @@ func (c *Client) CreateExport(ctx context.Context, req ExportRequest) (*ExportRe
 	return &res, nil
 }
 
+// downloadClient is a plain HTTP client used for fetching pre-signed export
+// download URLs. We deliberately avoid c.http because that client wraps
+// transports that inject `Authorization: Bearer <oauth-token>` — S3
+// rejects requests with conflicting Authorization headers when the URL
+// already carries a query-string signature. Using a plain client also
+// prevents leaking the OAuth bearer to S3.
+var downloadClient = &http.Client{Timeout: 5 * time.Minute}
+
 // DownloadTo downloads a single export URL to outPath. Streams to disk.
-// No Authorization header is sent — Canva export download URLs are S3
-// signed URLs that reject Bearer tokens (sending one would also leak it).
+// Uses a plain HTTP client — see downloadClient comment.
 func (c *Client) DownloadTo(ctx context.Context, urlStr, outPath string) error {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, urlStr, nil)
 	if err != nil {
 		return err
 	}
-	resp, err := c.http.Do(req)
+	resp, err := downloadClient.Do(req)
 	if err != nil {
 		return err
 	}
